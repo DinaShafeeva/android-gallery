@@ -1,11 +1,15 @@
 package com.redmadrobot.gallery.ui
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.Matrix
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.valueIterator
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
@@ -18,6 +22,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.entity.MediaType
 import com.redmadrobot.gallery.ui.custom.ExoPlayerView
@@ -116,6 +121,13 @@ private class VideoPage(
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
 
+    private lateinit var mFullScreenIcon: ImageView
+    private lateinit var mFullScreenButton: FrameLayout
+    private lateinit var mainLayout: ConstraintLayout
+    private var videoWidth = 0
+    private var videoHeight = 0
+    private var mExoPlayerFullscreen = false
+
     override val view: PlayerView = ExoPlayerView(context).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
@@ -123,6 +135,22 @@ private class VideoPage(
         hideController()
         setControllerVisibilityListener { visibility ->
             onPlayerControllerVisibilityListener((visibility == View.VISIBLE))
+        }
+        mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon)
+        mFullScreenButton = findViewById(R.id.exo_fullscreen_button)
+
+        if (videoHeight > videoWidth) {
+            mFullScreenIcon.visibility = View.INVISIBLE
+            mFullScreenButton.visibility = View.INVISIBLE
+        }
+        mainLayout = GalleryFragment.mainLayout
+
+        mFullScreenButton.setOnClickListener {
+            if (!mExoPlayerFullscreen) {
+                openFullscreenDialog()
+            } else {
+                closeFullscreenDialog()
+            }
         }
     }
 
@@ -142,6 +170,71 @@ private class VideoPage(
     fun hideController() = view.hideController()
 
     fun releasePlayer() = exoPlayerWrapper.release()
+
+    private fun openFullscreenDialog() {
+        doLandScape()
+//        mFullScreenIcon.setImageDrawable(
+//                ContextCompat.getDrawable(
+//                        requireContext(),
+//                        R.drawable.ic_fullscreen_skrink
+//                )
+//        )
+        mExoPlayerFullscreen = true
+    }
+
+    private fun closeFullscreenDialog() {
+        doPortrait()
+//        mFullScreenIcon.setImageDrawable(
+//                ContextCompat.getDrawable(
+//                        GalleryFragment.
+//                        R.drawable.ic_fullscreen_expand
+//                )
+//        )
+        mExoPlayerFullscreen = false
+    }
+
+    fun doLandScape() {
+        val w = GalleryFragment.mainLayout.width
+        val h = GalleryFragment.mainLayout.height
+        val transformMatrix = Matrix()
+        // val videoView = view.videoSurfaceView as TextureView?
+        GalleryFragment.mainLayout.apply {
+            rotation = 90.0f
+            translationX = (w - h) / 2.toFloat()
+            translationY = (h - w) / 2.toFloat()
+            //view.rotation = 90.0f
+//            transformMatrix.postRotate(90F, translationX, translationY)
+//            val originalTextureRect = RectF(0F, 0F, w.toFloat(), h.toFloat())
+//            val rotatedTextureRect = RectF()
+//            transformMatrix.mapRect(rotatedTextureRect, originalTextureRect)
+//            transformMatrix.postScale(
+//                    w / rotatedTextureRect.width(),
+//                    h / rotatedTextureRect.height(),
+//                    pivotX,
+//                    pivotY)
+            //     videoView?.setTransform(transformMatrix)
+        }
+        val lp = GalleryFragment.mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        GalleryFragment.mainLayout.requestLayout()
+    }
+
+    private fun doPortrait() {
+        val w = GalleryFragment.mainLayout.width
+        val h = GalleryFragment.mainLayout.height
+
+        GalleryFragment.mainLayout.apply {
+            rotation = 0f
+            translationX = 0f
+            translationY = 0f
+        }
+
+        val lp = GalleryFragment.mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        GalleryFragment.mainLayout.requestLayout()
+    }
 }
 
 private class ImagePage(

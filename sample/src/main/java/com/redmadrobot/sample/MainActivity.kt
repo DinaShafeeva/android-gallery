@@ -31,17 +31,17 @@ class MainActivity : AppCompatActivity() {
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/218/poster/severe-storm-over-mandurah.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/218/original/severe-storm-over-mandurah.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/205/poster/goomalling-storm.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/205/original/goomalling-storm.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/183/poster_3/a_sky_full_of_stars.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/183/original/a_sky_full_of_stars.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg",
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/161/poster/leonard_soosay--missfit.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/161/original/leonard_soosay--missfit.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg",
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/151/poster/gregory_latham--safran.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/151/original/gregory_latham--safran.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg",

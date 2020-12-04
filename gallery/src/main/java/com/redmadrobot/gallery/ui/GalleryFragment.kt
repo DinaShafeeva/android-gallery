@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.redmadrobot.gallery.R
@@ -16,6 +17,7 @@ import kotlin.math.min
 
 class GalleryFragment : DialogFragment() {
 
+
     companion object {
 
         private const val STATE_LAST_CHECKED_ITEM_INDEX = "state_last_checked_item_index"
@@ -23,6 +25,11 @@ class GalleryFragment : DialogFragment() {
         private const val ARG_LIST_OF_MEDIA = "arg_list_of_media"
         private const val ARG_INITIALLY_CHECKED_ITEM_INDEX = "arg_initially_checked_item_index"
         private const val ARG_FORCE_ROTATION = "arg_force_rotation"
+
+        val layoutId: Int = R.layout.fragment_video_player
+
+        lateinit var mainLayout: ConstraintLayout
+
 
         fun create(
                 list: ArrayList<Media>,
@@ -63,7 +70,7 @@ class GalleryFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mainLayout = main as ConstraintLayout
         dragLayout.setOnDragListener { dy ->
             backgroundColorView.alpha = 1 - min(Math.abs(dy / (3 * dismissPathLength)), 1f)
             viewPager.translationY = -dy
@@ -78,7 +85,8 @@ class GalleryFragment : DialogFragment() {
             }
         }
 
-        lastCheckedItemIndex = savedInstanceState?.getInt(STATE_LAST_CHECKED_ITEM_INDEX) ?: initiallyCheckedItemIndex
+        lastCheckedItemIndex = savedInstanceState?.getInt(STATE_LAST_CHECKED_ITEM_INDEX)
+                ?: initiallyCheckedItemIndex
 
         mediaViewController = MediaViewController(
                 viewPager = viewPager,
