@@ -2,13 +2,8 @@ package com.redmadrobot.gallery.ui
 
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Matrix
-import android.graphics.RectF
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
-import android.view.OrientationEventListener
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -31,7 +26,6 @@ import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.entity.MediaType
 import com.redmadrobot.gallery.ui.custom.ExoPlayerView
-import kotlinx.android.synthetic.main.fragment_gallery.view.*
 import java.util.*
 
 internal class MediaPagerAdapter(
@@ -127,18 +121,16 @@ private class VideoPage(
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
 
-    private lateinit var mFullScreenIcon: ImageView
-    private lateinit var mFullScreenButton: FrameLayout
-    private lateinit var mainLayout: ConstraintLayout
+    private var mFullScreenIcon: ImageView
+    private var mFullScreenButton: FrameLayout
+    private var mainLayout: ConstraintLayout
     private var videoWidth = 0
     private var videoHeight = 0
     private var mExoPlayerFullscreen = false
-    //var videoView: TextureView? = null
     override val view: PlayerView = ExoPlayerView(context).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
         controllerHideOnTouch = false
-      //  videoView = (videoSurfaceView as TextureView?)
 
         hideController()
         setControllerVisibilityListener { visibility ->
