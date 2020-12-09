@@ -27,7 +27,7 @@ apply from: 'publishing.gradle'
 ext {
     exoPlayerVersion = "2.8.3"
     libraryVersion = '1.0.0'
-    publishedGroupId = 'com.redmadrobot.gallery'
+    publishedGroupId = 'com.DinaShafeeva.redmadrobot.gallery'
     artifact = 'android-gallery'
 }
 
