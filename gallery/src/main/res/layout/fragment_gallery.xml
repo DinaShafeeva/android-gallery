@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.redmadrobot.gallery.ui.custom.VerticalDragLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dragLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/backgroundColorView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:keepScreenOn="true">
 
-    <com.redmadrobot.gallery.ui.custom.MultiTouchViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never" />
+        <View
+            android:id="@+id/backgroundColorView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000" />
+
+        <com.redmadrobot.gallery.ui.custom.MultiTouchViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            app:surface_type="texture_view"
+            >
+        </com.redmadrobot.gallery.ui.custom.MultiTouchViewPager>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 </com.redmadrobot.gallery.ui.custom.VerticalDragLayout>
