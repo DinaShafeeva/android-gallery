@@ -1,5 +1,6 @@
 package com.redmadrobot.gallery.ui
 
+import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.util.argument
@@ -26,10 +28,9 @@ class GalleryFragment : DialogFragment() {
         private const val ARG_INITIALLY_CHECKED_ITEM_INDEX = "arg_initially_checked_item_index"
         private const val ARG_FORCE_ROTATION = "arg_force_rotation"
 
-        val layoutId: Int = R.layout.fragment_video_player
-
         lateinit var mainLayout: ConstraintLayout
 
+        var activityGallery: FragmentActivity? = null
 
         fun create(
                 list: ArrayList<Media>,
@@ -71,6 +72,7 @@ class GalleryFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainLayout = main as ConstraintLayout
+        activityGallery = activity
         dragLayout.setOnDragListener { dy ->
             backgroundColorView.alpha = 1 - min(Math.abs(dy / (3 * dismissPathLength)), 1f)
             viewPager.translationY = -dy

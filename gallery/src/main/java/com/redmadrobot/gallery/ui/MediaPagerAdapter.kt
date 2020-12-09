@@ -1,10 +1,14 @@
 package com.redmadrobot.gallery.ui
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Matrix
+import android.graphics.RectF
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
+import android.view.OrientationEventListener
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -26,6 +30,7 @@ import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.entity.MediaType
 import com.redmadrobot.gallery.ui.custom.ExoPlayerView
+import kotlinx.android.synthetic.main.fragment_gallery.view.*
 import java.util.*
 
 internal class MediaPagerAdapter(
@@ -127,11 +132,13 @@ private class VideoPage(
     private var videoWidth = 0
     private var videoHeight = 0
     private var mExoPlayerFullscreen = false
-
+    //var videoView: TextureView? = null
     override val view: PlayerView = ExoPlayerView(context).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
         controllerHideOnTouch = false
+      //  videoView = (videoSurfaceView as TextureView?)
+
         hideController()
         setControllerVisibilityListener { visibility ->
             onPlayerControllerVisibilityListener((visibility == View.VISIBLE))
@@ -197,12 +204,15 @@ private class VideoPage(
         val w = GalleryFragment.mainLayout.width
         val h = GalleryFragment.mainLayout.height
         val transformMatrix = Matrix()
-        // val videoView = view.videoSurfaceView as TextureView?
         GalleryFragment.mainLayout.apply {
-            rotation = 90.0f
+          //  rotation = 90.0f
             translationX = (w - h) / 2.toFloat()
             translationY = (h - w) / 2.toFloat()
-            //view.rotation = 90.0f
+
+            GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+
+            //  (view.videoSurfaceView as TextureView).rotation = 90.0f
+//            view.rotation = 90.0f
 //            transformMatrix.postRotate(90F, translationX, translationY)
 //            val originalTextureRect = RectF(0F, 0F, w.toFloat(), h.toFloat())
 //            val rotatedTextureRect = RectF()
@@ -212,7 +222,7 @@ private class VideoPage(
 //                    h / rotatedTextureRect.height(),
 //                    pivotX,
 //                    pivotY)
-            //     videoView?.setTransform(transformMatrix)
+//                 videoView?.setTransform(transformMatrix)
         }
         val lp = GalleryFragment.mainLayout.layoutParams as ViewGroup.LayoutParams
         lp.height = w

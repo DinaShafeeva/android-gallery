@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/170/poster/tom_poederbach--las_vegas_blvd_copy_for_vimeo_by_philip_bloom.png",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/170/original/tom_poederbach--las_vegas_blvd_copy_for_vimeo_by_philip_bloom.mp4"
+                    "https://krujok.azureedge.net/video/90afd670-47e9-4f05-bf73-f2073525697c.mp4"
             ),
             Media(
                     "http://mazwai.com/system/posts/videos/000/000/161/poster/leonard_soosay--missfit.png",
