@@ -1,11 +1,15 @@
 package com.redmadrobot.gallery.ui
 
 import android.content.Context
-import android.graphics.Color
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.util.valueIterator
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
@@ -18,6 +22,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.entity.MediaType
 import com.redmadrobot.gallery.ui.custom.ExoPlayerView
@@ -111,18 +116,41 @@ private sealed class MediaPage {
 }
 
 private class VideoPage(
-        context: Context,
+        val context: Context,
         private val exoPlayerWrapper: ExoPlayerWrapper,
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
 
+    private var mFullScreenIcon: ImageView
+    private var mFullScreenButton: FrameLayout
+    private var mainLayout: ConstraintLayout
+    private var videoWidth = 0
+    private var videoHeight = 0
+    private var mExoPlayerFullscreen = false
     override val view: PlayerView = ExoPlayerView(context).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
         controllerHideOnTouch = false
+
         hideController()
         setControllerVisibilityListener { visibility ->
             onPlayerControllerVisibilityListener((visibility == View.VISIBLE))
+        }
+        mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon)
+        mFullScreenButton = findViewById(R.id.exo_fullscreen_button)
+
+        if (videoHeight > videoWidth) {
+            mFullScreenIcon.visibility = View.INVISIBLE
+            mFullScreenButton.visibility = View.INVISIBLE
+        }
+        mainLayout = GalleryFragment.mainLayout
+
+        mFullScreenButton.setOnClickListener {
+            if (!mExoPlayerFullscreen) {
+                openFullscreenDialog()
+            } else {
+                closeFullscreenDialog()
+            }
         }
     }
 
@@ -142,6 +170,36 @@ private class VideoPage(
     fun hideController() = view.hideController()
 
     fun releasePlayer() = exoPlayerWrapper.release()
+
+    private fun openFullscreenDialog() {
+        doLandScape()
+        mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_fullscreen_skrink
+                )
+        )
+        mExoPlayerFullscreen = true
+    }
+
+    private fun closeFullscreenDialog() {
+        doPortrait()
+        mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_fullscreen_expand
+                )
+        )
+        mExoPlayerFullscreen = false
+    }
+
+    fun doLandScape() {
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+    }
+
+    private fun doPortrait() {
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+    }
 }
 
 private class ImagePage(
