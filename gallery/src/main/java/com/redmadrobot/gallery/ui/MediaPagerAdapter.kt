@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.util.valueIterator
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
@@ -121,7 +122,7 @@ private sealed class MediaPage {
 }
 
 private class VideoPage(
-        context: Context,
+        val context: Context,
         private val exoPlayerWrapper: ExoPlayerWrapper,
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
@@ -180,70 +181,32 @@ private class VideoPage(
 
     private fun openFullscreenDialog() {
         doLandScape()
-//        mFullScreenIcon.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                        requireContext(),
-//                        R.drawable.ic_fullscreen_skrink
-//                )
-//        )
+        mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_fullscreen_skrink
+                )
+        )
         mExoPlayerFullscreen = true
     }
 
     private fun closeFullscreenDialog() {
         doPortrait()
-//        mFullScreenIcon.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                        GalleryFragment.
-//                        R.drawable.ic_fullscreen_expand
-//                )
-//        )
+        mFullScreenIcon.setImageDrawable(
+                ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_fullscreen_expand
+                )
+        )
         mExoPlayerFullscreen = false
     }
 
     fun doLandScape() {
-        val w = GalleryFragment.mainLayout.width
-        val h = GalleryFragment.mainLayout.height
-        val transformMatrix = Matrix()
-        GalleryFragment.mainLayout.apply {
-          //  rotation = 90.0f
-            translationX = (w - h) / 2.toFloat()
-            translationY = (h - w) / 2.toFloat()
-
-            GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-
-            //  (view.videoSurfaceView as TextureView).rotation = 90.0f
-//            view.rotation = 90.0f
-//            transformMatrix.postRotate(90F, translationX, translationY)
-//            val originalTextureRect = RectF(0F, 0F, w.toFloat(), h.toFloat())
-//            val rotatedTextureRect = RectF()
-//            transformMatrix.mapRect(rotatedTextureRect, originalTextureRect)
-//            transformMatrix.postScale(
-//                    w / rotatedTextureRect.width(),
-//                    h / rotatedTextureRect.height(),
-//                    pivotX,
-//                    pivotY)
-//                 videoView?.setTransform(transformMatrix)
-        }
-        val lp = GalleryFragment.mainLayout.layoutParams as ViewGroup.LayoutParams
-        lp.height = w
-        lp.width = h
-        GalleryFragment.mainLayout.requestLayout()
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
     }
 
     private fun doPortrait() {
-        val w = GalleryFragment.mainLayout.width
-        val h = GalleryFragment.mainLayout.height
-
-        GalleryFragment.mainLayout.apply {
-            rotation = 0f
-            translationX = 0f
-            translationY = 0f
-        }
-
-        val lp = GalleryFragment.mainLayout.layoutParams as ViewGroup.LayoutParams
-        lp.height = w
-        lp.width = h
-        GalleryFragment.mainLayout.requestLayout()
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     }
 }
 
