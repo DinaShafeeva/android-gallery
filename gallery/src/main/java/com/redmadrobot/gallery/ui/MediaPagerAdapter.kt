@@ -1,10 +1,10 @@
 package com.redmadrobot.gallery.ui
 
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -60,10 +60,6 @@ internal class MediaPagerAdapter(
         container.removeView(mediaPage.view)
         mediaPagesInUse.remove(position)
         mediaPagePool.releaseMediaPage(mediaPage)
-        if (GalleryFragment.activityGallery?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-
     }
 
     override fun isViewFromObject(view: View, key: Any): Boolean = ((key as MediaPage).view == view)
@@ -126,15 +122,15 @@ private class VideoPage(
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
 
-    private var mFullScreenIcon: ImageView
+    private var mExoPlayerFullscreen = false
     private var mFullScreenButton: FrameLayout
     private var mainLayout: ConstraintLayout
     private var videoWidth = 0
     private var videoHeight = 0
-    private var mExoPlayerFullscreen = false
+    private var mFullScreenIcon: ImageView
     val retriever = MediaMetadataRetriever()
 
-    override val view: PlayerView = ExoPlayerView(context).apply {
+    override val view: PlayerView = (LayoutInflater.from(context).inflate(R.layout.player_view, null) as ExoPlayerView).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
         controllerHideOnTouch = false
@@ -209,11 +205,35 @@ private class VideoPage(
     }
 
     fun doLandScape() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        val w = mainLayout.width
+        val h = mainLayout.height
+
+        mainLayout.apply {
+            rotation = 90.0f
+            translationX = (w - h) / 2.toFloat()
+            translationY = (h - w) / 2.toFloat()
+        }
+
+        val lp = mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        mainLayout.requestLayout()
     }
 
     private fun doPortrait() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        val w = mainLayout.width
+        val h = mainLayout.height
+
+        mainLayout.apply {
+            rotation = 0f
+            translationX = 0f
+            translationY = 0f
+        }
+
+        val lp = mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        mainLayout.requestLayout()
     }
 }
 
