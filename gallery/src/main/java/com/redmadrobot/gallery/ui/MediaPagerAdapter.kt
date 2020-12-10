@@ -1,9 +1,10 @@
 package com.redmadrobot.gallery.ui
 
 import android.content.Context
-import android.content.pm.ActivityInfo
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -121,13 +122,15 @@ private class VideoPage(
         onPlayerControllerVisibilityListener: (Boolean) -> Unit
 ) : MediaPage() {
 
-    private var mFullScreenIcon: ImageView
+    private var mExoPlayerFullscreen = false
     private var mFullScreenButton: FrameLayout
     private var mainLayout: ConstraintLayout
     private var videoWidth = 0
     private var videoHeight = 0
-    private var mExoPlayerFullscreen = false
-    override val view: PlayerView = ExoPlayerView(context).apply {
+    private var mFullScreenIcon: ImageView
+    val retriever = MediaMetadataRetriever()
+
+    override val view: PlayerView = (LayoutInflater.from(context).inflate(R.layout.player_view, null) as ExoPlayerView).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
         controllerHideOnTouch = false
@@ -139,10 +142,6 @@ private class VideoPage(
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon)
         mFullScreenButton = findViewById(R.id.exo_fullscreen_button)
 
-        if (videoHeight > videoWidth) {
-            mFullScreenIcon.visibility = View.INVISIBLE
-            mFullScreenButton.visibility = View.INVISIBLE
-        }
         mainLayout = GalleryFragment.mainLayout
 
         mFullScreenButton.setOnClickListener {
@@ -157,6 +156,18 @@ private class VideoPage(
     override var media: Media? = null
         set(value) {
             field = value
+            value?.let {
+                retriever.setDataSource(Uri.parse(value.url).toString(), hashMapOf<String, String>())
+                videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)!!.toInt()
+                videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)!!.toInt()
+                if (videoHeight > videoWidth) {
+                    mFullScreenIcon.visibility = View.GONE
+                    mFullScreenButton.visibility = View.GONE
+                } else {
+                    mFullScreenIcon.visibility = View.VISIBLE
+                    mFullScreenButton.visibility = View.VISIBLE
+                }
+            }
             when (value) {
                 null -> exoPlayerWrapper.pause()
                 else -> exoPlayerWrapper.setMediaSource(value.url)
@@ -194,11 +205,35 @@ private class VideoPage(
     }
 
     fun doLandScape() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        val w = mainLayout.width
+        val h = mainLayout.height
+
+        mainLayout.apply {
+            rotation = 90.0f
+            translationX = (w - h) / 2.toFloat()
+            translationY = (h - w) / 2.toFloat()
+        }
+
+        val lp = mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        mainLayout.requestLayout()
     }
 
     private fun doPortrait() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        val w = mainLayout.width
+        val h = mainLayout.height
+
+        mainLayout.apply {
+            rotation = 0f
+            translationX = 0f
+            translationY = 0f
+        }
+
+        val lp = mainLayout.layoutParams as ViewGroup.LayoutParams
+        lp.height = w
+        lp.width = h
+        mainLayout.requestLayout()
     }
 }
 
