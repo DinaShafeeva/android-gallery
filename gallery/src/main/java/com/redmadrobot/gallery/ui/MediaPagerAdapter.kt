@@ -46,7 +46,6 @@ internal class MediaPagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val media = listOfMedia[position]
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val mediaPage = when (media.type) {
             MediaType.VIDEO -> mediaPagePool.getVideoPage().apply { this.media = media }
             MediaType.IMAGE -> mediaPagePool.getImagePage().apply { this.media = media }
@@ -61,6 +60,10 @@ internal class MediaPagerAdapter(
         container.removeView(mediaPage.view)
         mediaPagesInUse.remove(position)
         mediaPagePool.releaseMediaPage(mediaPage)
+        if (GalleryFragment.activityGallery?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
     }
 
     override fun isViewFromObject(view: View, key: Any): Boolean = ((key as MediaPage).view == view)
