@@ -2,6 +2,7 @@ package com.redmadrobot.gallery.ui
 
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.SparseArray
 import android.view.View
@@ -45,6 +46,7 @@ internal class MediaPagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val media = listOfMedia[position]
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val mediaPage = when (media.type) {
             MediaType.VIDEO -> mediaPagePool.getVideoPage().apply { this.media = media }
             MediaType.IMAGE -> mediaPagePool.getImagePage().apply { this.media = media }
@@ -127,6 +129,8 @@ private class VideoPage(
     private var videoWidth = 0
     private var videoHeight = 0
     private var mExoPlayerFullscreen = false
+    val retriever = MediaMetadataRetriever()
+
     override val view: PlayerView = ExoPlayerView(context).apply {
         exoPlayerWrapper.attachTo(this)
         controllerAutoShow = false
@@ -139,10 +143,6 @@ private class VideoPage(
         mFullScreenIcon = findViewById(R.id.exo_fullscreen_icon)
         mFullScreenButton = findViewById(R.id.exo_fullscreen_button)
 
-        if (videoHeight > videoWidth) {
-            mFullScreenIcon.visibility = View.INVISIBLE
-            mFullScreenButton.visibility = View.INVISIBLE
-        }
         mainLayout = GalleryFragment.mainLayout
 
         mFullScreenButton.setOnClickListener {
@@ -157,6 +157,18 @@ private class VideoPage(
     override var media: Media? = null
         set(value) {
             field = value
+            value?.let {
+                retriever.setDataSource(Uri.parse(value.url).toString(), hashMapOf<String, String>())
+                videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)!!.toInt()
+                videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)!!.toInt()
+                if (videoHeight > videoWidth) {
+                    mFullScreenIcon.visibility = View.GONE
+                    mFullScreenButton.visibility = View.GONE
+                } else {
+                    mFullScreenIcon.visibility = View.VISIBLE
+                    mFullScreenButton.visibility = View.VISIBLE
+                }
+            }
             when (value) {
                 null -> exoPlayerWrapper.pause()
                 else -> exoPlayerWrapper.setMediaSource(value.url)
@@ -194,11 +206,11 @@ private class VideoPage(
     }
 
     fun doLandScape() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
     private fun doPortrait() {
-        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        GalleryFragment.activityGallery?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 }
 
