@@ -29,19 +29,19 @@ class MainActivity : AppCompatActivity() {
 
     private val listOfMedia = ArrayList(listOf(
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/218/poster/severe-storm-over-mandurah.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/218/original/severe-storm-over-mandurah.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             ),
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/205/poster/goomalling-storm.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/205/original/goomalling-storm.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
             ),
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/183/poster_3/a_sky_full_of_stars.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/183/original/a_sky_full_of_stars.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg",
@@ -64,14 +64,14 @@ class MainActivity : AppCompatActivity() {
                     "https://images.pexels.com/photos/1039302/pexels-photo-1039302.jpeg"
             ),
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/170/poster/tom_poederbach--las_vegas_blvd_copy_for_vimeo_by_philip_bloom.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/170/original/tom_poederbach--las_vegas_blvd_copy_for_vimeo_by_philip_bloom.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
             ),
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/161/poster/leonard_soosay--missfit.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/161/original/leonard_soosay--missfit.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg",
@@ -84,9 +84,9 @@ class MainActivity : AppCompatActivity() {
                     "https://images.pexels.com/photos/248771/pexels-photo-248771.jpeg"
             ),
             Media(
-                    "http://mazwai.com/system/posts/videos/000/000/151/poster/gregory_latham--safran.png",
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
                     MediaType.VIDEO,
-                    "http://mazwai.com/system/posts/videos/000/000/151/original/gregory_latham--safran.mp4"
+                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
             ),
             Media(
                     "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg",

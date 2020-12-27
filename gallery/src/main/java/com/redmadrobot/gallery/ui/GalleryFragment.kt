@@ -1,7 +1,5 @@
 package com.redmadrobot.gallery.ui
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,47 +17,36 @@ import kotlin.math.min
 
 class GalleryFragment : DialogFragment() {
 
-
     companion object {
-
         private const val STATE_LAST_CHECKED_ITEM_INDEX = "state_last_checked_item_index"
-
         private const val ARG_LIST_OF_MEDIA = "arg_list_of_media"
         private const val ARG_INITIALLY_CHECKED_ITEM_INDEX = "arg_initially_checked_item_index"
-        private const val ARG_FORCE_ROTATION = "arg_force_rotation"
 
         lateinit var mainLayout: ConstraintLayout
-
         var activityGallery: FragmentActivity? = null
 
         fun create(
                 list: ArrayList<Media>,
-                initiallyCheckedItemIndex: Int,
-                forceEnableAutoRotation: Boolean = false
+                initiallyCheckedItemIndex: Int
         ): GalleryFragment =
                 GalleryFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ARG_LIST_OF_MEDIA, list)
                         putInt(ARG_INITIALLY_CHECKED_ITEM_INDEX, initiallyCheckedItemIndex)
-                        putBoolean(ARG_FORCE_ROTATION, forceEnableAutoRotation)
                     }
                 }
     }
 
     private val listOfMedia: ArrayList<Media> by argument(ARG_LIST_OF_MEDIA)
     private val initiallyCheckedItemIndex: Int by argument(ARG_INITIALLY_CHECKED_ITEM_INDEX)
-    private val forceEnableAutoRotation: Boolean by argument(ARG_FORCE_ROTATION)
-
     private var lastCheckedItemIndex: Int = 0
     private lateinit var mediaViewController: MediaViewController
-
-    private var initiallyScreenOrientation: Int = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
     private val dismissPathLength by lazy { resources.getDimensionPixelSize(R.dimen.dismiss_path_length) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog_FullScreen)
+        setStyle(STYLE_NORMAL, R.style.Dialog_FullScreen)
     }
 
     override fun onCreateView(
@@ -114,19 +101,8 @@ class GalleryFragment : DialogFragment() {
     }
 
     override fun onResume() {
-        activity?.run {
-            initiallyScreenOrientation = requestedOrientation
-            if (forceEnableAutoRotation) {
-                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-            }
-        }
         applyWindowFullscreenStyle()
         super.onResume()
-    }
-
-    override fun onPause() {
-        activity?.requestedOrientation = initiallyScreenOrientation
-        super.onPause()
     }
 
     private fun applyWindowFullscreenStyle() {

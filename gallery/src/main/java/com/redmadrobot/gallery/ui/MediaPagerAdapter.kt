@@ -157,15 +157,13 @@ private class VideoPage(
         set(value) {
             field = value
             value?.let {
-                retriever.setDataSource(Uri.parse(value.url).toString(), hashMapOf<String, String>())
-                videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)!!.toInt()
-                videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)!!.toInt()
-                if (videoHeight > videoWidth) {
-                    mFullScreenIcon.visibility = View.GONE
-                    mFullScreenButton.visibility = View.GONE
-                } else {
-                    mFullScreenIcon.visibility = View.VISIBLE
-                    mFullScreenButton.visibility = View.VISIBLE
+                try {
+                    retriever.setDataSource(Uri.parse(value.url).toString(), hashMapOf<String, String>())
+                    videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT).toInt()
+                    videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH).toInt()
+                    setFullscreenButtonVisibility(videoWidth > videoHeight)
+                } catch (e: Exception) {
+                    setFullscreenButtonVisibility(true)
                 }
             }
             when (value) {
@@ -173,6 +171,11 @@ private class VideoPage(
                 else -> exoPlayerWrapper.setMediaSource(value.url)
             }
         }
+
+    fun setFullscreenButtonVisibility(visible: Boolean) {
+        mFullScreenIcon.visibility = if (visible) View.VISIBLE else View.GONE
+        mFullScreenButton.visibility = if (visible) View.VISIBLE else View.GONE
+    }
 
     fun startOrResume() = exoPlayerWrapper.startOrResume()
 
