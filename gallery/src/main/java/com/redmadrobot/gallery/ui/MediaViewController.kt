@@ -5,6 +5,7 @@ import com.redmadrobot.gallery.entity.Media
 
 internal class MediaViewController(
         private val viewPager: ViewPager,
+        private val exoPlayerCallbacks: ExoPlayerCallbacks,
         private val onCurrentItemChangeListener: (Int) -> Unit,
         private val onPlayerControllerVisibilityListener: (Boolean) -> Unit,
         private val onImageZoomListener: (isZoomed: Boolean) -> Unit
@@ -17,6 +18,7 @@ internal class MediaViewController(
         adapter = MediaPagerAdapter(
                 listOfMedia,
                 viewPager.context,
+                exoPlayerCallbacks,
                 onPlayerControllerVisibilityListener,
                 onImageZoomListener
         )

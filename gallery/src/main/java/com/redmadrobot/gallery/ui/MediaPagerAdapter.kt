@@ -32,13 +32,14 @@ import java.util.*
 internal class MediaPagerAdapter(
         private val listOfMedia: List<Media>,
         context: Context,
+        exoPlayerCallbacks: ExoPlayerCallbacks,
         onPlayerControllerVisibilityListener: (Boolean) -> Unit,
         onImageZoomListener: (isZoomed: Boolean) -> Unit
 ) : PagerAdapter() {
 
     private val mediaPagePool = MediaPagePool(
             context,
-            ExoPlayerFactory(context),
+            ExoPlayerFactory(context, exoPlayerCallbacks),
             onPlayerControllerVisibilityListener,
             onImageZoomListener
     )
@@ -317,7 +318,8 @@ private class MediaPagePool(
  */
 private class ExoPlayerWrapper(
         private val exoPlayer: ExoPlayer,
-        private val mediaSourceFactory: ExtractorMediaSource.Factory
+        private val mediaSourceFactory: ExtractorMediaSource.Factory,
+        private val exoPlayerCallbacks: ExoPlayerCallbacks
 ) {
 
     fun attachTo(playerView: PlayerView) {
@@ -326,20 +328,27 @@ private class ExoPlayerWrapper(
 
     fun startOrResume() {
         exoPlayer.playWhenReady = true
+        exoPlayerCallbacks.isStarted(true)
+        exoPlayerCallbacks.isReleased(false, exoPlayer.duration)
     }
 
     fun pause() {
         exoPlayer.playWhenReady = false
+        exoPlayerCallbacks.isStarted(false)
     }
 
     fun setMediaSource(url: String) {
         exoPlayer.prepare(mediaSourceFactory.createMediaSource(Uri.parse(url)))
     }
 
-    fun release() = exoPlayer.release()
+    fun release() {
+        exoPlayer.release()
+        exoPlayerCallbacks.isStarted(false)
+        if (exoPlayer.currentPosition > 0) exoPlayerCallbacks.isReleased(true, exoPlayer.currentPosition)
+    }
 }
 
-private class ExoPlayerFactory(private val context: Context) {
+private class ExoPlayerFactory(private val context: Context, private val exoPlayerCallbacks: ExoPlayerCallbacks) {
 
     private val userAgent: String = Util.getUserAgent(context, "Gallery")
 
@@ -358,7 +367,13 @@ private class ExoPlayerFactory(private val context: Context) {
                                 userAgent,
                                 bandwidthMeter
                         )
-                )
+                ),
+                exoPlayerCallbacks
         )
     }
+}
+
+interface ExoPlayerCallbacks {
+    fun isStarted(isStarted: Boolean)
+    fun isReleased(isReleased: Boolean, timeWhenReleased: Long)
 }

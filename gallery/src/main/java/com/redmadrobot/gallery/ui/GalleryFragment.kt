@@ -9,13 +9,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.MutableLiveData
 import com.redmadrobot.gallery.R
 import com.redmadrobot.gallery.entity.Media
 import com.redmadrobot.gallery.util.argument
 import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlin.math.min
 
-class GalleryFragment : DialogFragment() {
+class GalleryFragment : DialogFragment(), ExoPlayerCallbacks {
 
     companion object {
         private const val STATE_LAST_CHECKED_ITEM_INDEX = "state_last_checked_item_index"
@@ -24,6 +25,9 @@ class GalleryFragment : DialogFragment() {
 
         lateinit var mainLayout: ConstraintLayout
         var activityGallery: FragmentActivity? = null
+        var isStarted = MutableLiveData<Boolean>().apply { value = false }
+        var isReleased = MutableLiveData<Boolean>().apply { value = false }
+        var seekTo = MutableLiveData<Long>().apply { value = 0 }
 
         fun create(
                 list: ArrayList<Media>,
@@ -79,6 +83,7 @@ class GalleryFragment : DialogFragment() {
 
         mediaViewController = MediaViewController(
                 viewPager = viewPager,
+                exoPlayerCallbacks = this,
                 onCurrentItemChangeListener = { index ->
                     lastCheckedItemIndex = index
                 },
@@ -112,5 +117,14 @@ class GalleryFragment : DialogFragment() {
                 height = WindowManager.LayoutParams.MATCH_PARENT
             }
         }
+    }
+
+    override fun isStarted(isStarted: Boolean) {
+        GalleryFragment.isStarted.value = isStarted
+    }
+
+    override fun isReleased(isReleased: Boolean, timeWhenReleased: Long) {
+        GalleryFragment.isReleased.value = isReleased
+        if (isReleased) seekTo.value = timeWhenReleased
     }
 }
